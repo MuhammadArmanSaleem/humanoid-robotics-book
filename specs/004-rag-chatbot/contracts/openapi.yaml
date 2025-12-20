@@ -1,0 +1,315 @@
+openapi: 3.0.3
+info:
+  title: RAG Chatbot API
+  description: API for the RAG-based chatbot that answers questions from textbook content
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Local development server
+  - url: https://your-deployment-url.com
+    description: Production server
+
+paths:
+  /api/chat:
+    post:
+      summary: Send a message to the chatbot
+      description: Process user message and return AI-generated response with citations
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatRequest'
+      responses:
+        '200':
+          description: Server-Sent Events stream with chat response
+          content:
+            text/event-stream:
+              schema:
+                $ref: '#/components/schemas/ChatResponse'
+        '400':
+          description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/health:
+    get:
+      summary: Health check endpoint
+      description: Check the health status of the chatbot service
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '500':
+          description: Service is unhealthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /api/index-content:
+    post:
+      summary: Index textbook content
+      description: Add textbook content chunks to the vector database for RAG
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IndexContentRequest'
+      responses:
+        '200':
+          description: Content indexed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IndexContentResponse'
+        '400':
+          description: Invalid content format
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ChatRequest:
+      type: object
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          description: User's question or message
+          example: "What is embodied intelligence in Physical AI?"
+        context:
+          type: object
+          description: Additional context for the query
+          properties:
+            selected_text:
+              type: string
+              description: Text selected by user on the current page
+              example: "Embodied intelligence is the theory that intelligence emerges from the interaction between an agent and its physical environment."
+            current_url:
+              type: string
+              description: Current page URL where chat was initiated
+              example: "/chapter-1-introduction-to-physical-ai/lesson-1-what-is-physical-ai"
+            session_id:
+              type: string
+              description: Existing session ID to continue conversation
+              example: "sess_abc123def456"
+          required: []
+
+    ChatResponse:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [text, sources, navigation, session_update]
+          description: Type of response chunk
+        content:
+          type: string
+          description: Response content (for text type)
+          example: "Embodied intelligence is the theory that intelligence emerges from the interaction..."
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/Source'
+          description: Source citations for the response
+        navigation:
+          type: array
+          items:
+            $ref: '#/components/schemas/NavigationLink'
+          description: Navigation links to relevant content
+        session_id:
+          type: string
+          description: Session ID for conversation continuity
+          example: "sess_abc123def456"
+
+    Source:
+      type: object
+      properties:
+        url:
+          type: string
+          description: URL to the source content
+          example: "/chapter-1-introduction-to-physical-ai/lesson-1-what-is-physical-ai"
+        title:
+          type: string
+          description: Title of the source content
+          example: "What is Physical AI?"
+        chapter:
+          type: string
+          description: Chapter identifier
+          example: "Chapter 1: Introduction to Physical AI"
+        lesson:
+          type: string
+          description: Lesson identifier
+          example: "Lesson 1: What is Physical AI?"
+        relevance:
+          type: number
+          description: Relevance score (0-1)
+          example: 0.85
+          minimum: 0
+          maximum: 1
+
+    NavigationLink:
+      type: object
+      properties:
+        url:
+          type: string
+          description: URL for navigation
+          example: "/chapter-1-introduction-to-physical-ai/lesson-2-history-and-evolution"
+        title:
+          type: string
+          description: Title of the linked content
+          example: "History and Evolution of Physical AI"
+        type:
+          type: string
+          enum: [prerequisite, related, advanced, overview]
+          description: Type of navigation link
+
+    IndexContentRequest:
+      type: object
+      required:
+        - content_chunks
+      properties:
+        content_chunks:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContentChunk'
+
+    ContentChunk:
+      type: object
+      required:
+        - content
+        - chapter
+        - lesson
+        - url
+      properties:
+        content:
+          type: string
+          description: Text content chunk (200-500 words)
+          example: "Embodied intelligence is the theory that intelligence emerges from the interaction between an agent and its physical environment..."
+        chapter:
+          type: string
+          description: Chapter identifier
+          example: "chapter-1-introduction-to-physical-ai"
+        lesson:
+          type: string
+          description: Lesson identifier
+          example: "lesson-1-what-is-physical-ai"
+        section:
+          type: string
+          description: Section within the lesson (optional)
+          example: "core-principles"
+        url:
+          type: string
+          description: URL to the content location
+          example: "/chapter-1-introduction-to-physical-ai/lesson-1-what-is-physical-ai"
+
+    IndexContentResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Whether indexing was successful
+          example: true
+        indexed_count:
+          type: number
+          description: Number of chunks successfully indexed
+          example: 50
+        error_count:
+          type: number
+          description: Number of chunks that failed to index
+          example: 0
+        errors:
+          type: array
+          items:
+            type: string
+          description: Error messages for failed chunks
+
+    HealthResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [healthy, unhealthy]
+          description: Overall health status
+          example: "healthy"
+        timestamp:
+          type: string
+          format: date-time
+          description: Time of health check
+          example: "2025-12-16T10:30:00Z"
+        version:
+          type: string
+          description: API version
+          example: "1.0.0"
+        dependencies:
+          type: object
+          description: Health status of dependencies
+          properties:
+            qdrant:
+              type: string
+              enum: [healthy, unhealthy]
+              description: Vector database health
+            gemini:
+              type: string
+              enum: [healthy, unhealthy]
+              description: LLM service health
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+          example: "Invalid request parameters"
+        code:
+          type: string
+          description: Error code
+          example: "INVALID_INPUT"
+        details:
+          type: object
+          description: Additional error details
+          example: {"field": "message", "reason": "Message cannot be empty"}
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      description: Bearer token authentication (if required)
+
+security:
+  - BearerAuth: []
+
+tags:
+  - name: chat
+    description: Chatbot interaction endpoints
+  - name: content
+    description: Content indexing and management
+  - name: health
+    description: Health and status checks
