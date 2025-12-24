@@ -1,44 +1,44 @@
-# Implementation Plan: Content Architect Subagent
+# Implementation Plan: [FEATURE]
 
-**Branch**: `001-content-architect-subagent` | **Date**: 2025-12-15 | **Spec**: [specs/001-content-architect-subagent/spec.md](spec.md)
-**Input**: Feature specification from `/specs/001-content-architect-subagent/spec.md`
+**Branch**: `[###-feature-name]` | **Date**: [DATE] | **Spec**: [link]
+**Input**: Feature specification from `/specs/[###-feature-name]/spec.md`
 
 **Note**: This template is filled in by the `/sp.plan` command. See `.specify/templates/commands/plan.md` for the execution workflow.
 
 ## Summary
 
-The Content Architect Subagent will implement a command-line tool that reads COURSE_CONTENT.md and automatically generates the complete Docusaurus textbook structure for 3 chapters with 2 lessons each. The implementation will focus on file system operations, parsing, and Docusaurus configuration generation while maintaining idempotent execution and preserving manual customizations.
+[Extract from feature spec: primary requirement + technical approach from research]
 
 ## Technical Context
 
-**Language/Version**: Python 3.11 (aligns with constitution's FastAPI requirement and Claude Code integration)
-**Primary Dependencies**: PyYAML (for parsing configuration), markdown (for processing), pathlib (for file operations), json (for configuration generation)
-**Storage**: File system-based (no database needed - operates on markdown and configuration files)
-**Testing**: pytest (aligns with constitution's testing requirements)
-**Target Platform**: Cross-platform (Linux, macOS, Windows) for developer workflow
-**Project Type**: Single CLI tool project (determines source structure)
-**Performance Goals**: Generate complete textbook structure (3 chapters × 2 lessons = 6 lessons) in under 30 seconds
-**Constraints**: <200MB memory usage, support for 100+ concurrent file operations, maintain SEO-friendly URL patterns
-**Scale/Scope**: Support up to 100 chapters and 1000 lessons with proper directory organization
+<!--
+  ACTION REQUIRED: Replace the content in this section with the technical details
+  for the project. The structure here is presented in advisory capacity to guide
+  the iteration process.
+-->
+
+**Language/Version**: [e.g., Python 3.11, Swift 5.9, Rust 1.75 or NEEDS CLARIFICATION]  
+**Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]  
+**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]  
+**Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]  
+**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Project Type**: [single/web/mobile - determines source structure]  
+**Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]  
+**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]  
+**Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-- **Content-First Development**: Implementation will prioritize educational quality by ensuring proper pedagogical structure in generated content
-- **AI-Assisted Spec-Driven Workflow**: Following Spec-Kit Plus methodology as mandated by constitution
-- **Progressive Enhancement Architecture**: This subagent supports the base Docusaurus textbook implementation (Phase 1 requirement)
-- **Reusable Intelligence**: This is a Claude Code Subagent as required by constitution for +50 bonus points
-- **Technical Stack Compliance**: Using Python (aligns with FastAPI ecosystem in constitution)
-- **Zero-Cost Architecture**: File-based operations with no external dependencies beyond standard libraries
-- **Test-Before-Implement**: Test coverage >80% for base features as required
+[Gates determined based on constitution file]
 
 ## Project Structure
 
 ### Documentation (this feature)
 
 ```text
-specs/001-content-architect-subagent/
+specs/[###-feature]/
 ├── plan.md              # This file (/sp.plan command output)
 ├── research.md          # Phase 0 output (/sp.plan command)
 ├── data-model.md        # Phase 1 output (/sp.plan command)
@@ -48,30 +48,51 @@ specs/001-content-architect-subagent/
 ```
 
 ### Source Code (repository root)
+<!--
+  ACTION REQUIRED: Replace the placeholder tree below with the concrete layout
+  for this feature. Delete unused options and expand the chosen structure with
+  real paths (e.g., apps/admin, packages/something). The delivered plan must
+  not include Option labels.
+-->
 
 ```text
+# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
 src/
-├── content_architect/
-│   ├── __init__.py
-│   ├── main.py          # CLI entry point
-│   ├── parser.py        # COURSE_CONTENT.md parsing logic
-│   ├── generator.py     # Directory and file generation logic
-│   ├── docusaurus.py    # Docusaurus-specific configuration generation
-│   └── utils.py         # Utility functions
+├── models/
+├── services/
 ├── cli/
-│   └── content_architect_cli.py  # Command-line interface
+└── lib/
+
+tests/
+├── contract/
+├── integration/
+└── unit/
+
+# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
+backend/
+├── src/
+│   ├── models/
+│   ├── services/
+│   └── api/
 └── tests/
-    ├── unit/
-    │   ├── test_parser.py
-    │   ├── test_generator.py
-    │   └── test_docusaurus.py
-    ├── integration/
-    │   └── test_end_to_end.py
-    └── fixtures/
-        └── sample_course_content.md
+
+frontend/
+├── src/
+│   ├── components/
+│   ├── pages/
+│   └── services/
+└── tests/
+
+# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
+api/
+└── [same as backend above]
+
+ios/ or android/
+└── [platform-specific structure: feature modules, UI flows, platform tests]
 ```
 
-**Structure Decision**: Single CLI tool project structure selected to implement the Content Architect Subagent. This structure provides clear separation of concerns with dedicated modules for parsing, generation, and Docusaurus-specific functionality while maintaining testability.
+**Structure Decision**: [Document the selected structure and reference the real
+directories captured above]
 
 ## Complexity Tracking
 
@@ -79,4 +100,5 @@ src/
 
 | Violation | Why Needed | Simpler Alternative Rejected Because |
 |-----------|------------|-------------------------------------|
-| Multi-module architecture | Clear separation of concerns for maintainability | Single-file approach would create unmaintainable monolith as feature complexity grows |
+| [e.g., 4th project] | [current need] | [why 3 projects insufficient] |
+| [e.g., Repository pattern] | [specific problem] | [why direct DB access insufficient] |

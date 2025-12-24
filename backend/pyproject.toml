@@ -1,0 +1,25 @@
+[project]
+name = "rag-chatbot-api"
+version = "0.0.1"
+description = "RAG Chatbot API for textbook content"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.104.1",
+    "uvicorn>=0.24.0",
+    "python-dotenv>=1.0.0",
+    "qdrant-client>=1.7.0",
+    "fastembed>=0.2.0",
+    "agents>=0.1.0",
+    "sse-starlette>=1.8.2",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "httpx>=0.25.0",
+]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
