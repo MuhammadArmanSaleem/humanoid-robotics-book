@@ -78,4 +78,4 @@ By the end of this lesson, you will be able to:
 - [Resource 3: Link or reference to additional material]
 
 ### Next Lesson
-Continue to [Next Lesson Title](./next-lesson-path) to build upon the concepts learned in this lesson.
+You've completed the textbook! Review the concepts or explore specific topics in more detail using the navigation menu.

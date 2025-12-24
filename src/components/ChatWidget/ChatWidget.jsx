@@ -3,15 +3,14 @@ import { useBaseUrl } from '@docusaurus/useBaseUrl';
 import clsx from 'clsx';
 import styles from './ChatWidget.module.css';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
 
-const ChatWidget = () => {
+const ChatWidget = ({ selectedText = '' }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [sessionId, setSessionId] = useState(null);
-  const [selectedText, setSelectedText] = useState('');
 
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -25,7 +24,7 @@ const ChatWidget = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Initialize session when component mounts
+  // Initialize session and widget state when component mounts
   useEffect(() => {
     const initSession = async () => {
       // Use existing session if available, otherwise create new one
@@ -35,8 +34,25 @@ const ChatWidget = () => {
       }
     };
 
+    // Restore chat widget open/closed state from localStorage
+    const savedState = localStorage.getItem('chat-widget-state');
+    if (savedState) {
+      try {
+        const parsedState = JSON.parse(savedState);
+        setIsOpen(parsedState.isOpen || false);
+      } catch (e) {
+        // If parsing fails, default to closed
+        setIsOpen(false);
+      }
+    }
+
     initSession();
   }, []);
+
+  // Persist chat widget state to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('chat-widget-state', JSON.stringify({ isOpen }));
+  }, [isOpen]);
 
   // Handle sending a message
   const handleSendMessage = async () => {
@@ -49,9 +65,14 @@ const ChatWidget = () => {
       timestamp: new Date().toISOString(),
     };
 
-    // Add user message to chat
-    const newMessages = [...messages, userMessage];
-    setMessages(newMessages);
+    // Add user message and loading indicator to chat
+    const loadingMessage = {
+      id: Date.now() + 0.5,
+      role: 'loading',
+      content: 'Thinking...',
+      timestamp: new Date().toISOString(),
+    };
+    setMessages(prev => [...prev, userMessage, loadingMessage]);
     setInputValue('');
     setIsLoading(true);
 
@@ -96,17 +117,24 @@ const ChatWidget = () => {
         timestamp: new Date().toISOString(),
       };
 
-      // Add assistant message to chat
-      setMessages(prev => [...prev, assistantMessage]);
+      // Remove loading indicator and add assistant message
+      setMessages(prev => {
+        const withoutLoading = prev.filter(msg => msg.role !== 'loading');
+        return [...withoutLoading, assistantMessage];
+      });
     } catch (error) {
       console.error('Error sending message:', error);
-      const errorMessage = {
-        id: Date.now() + 1,
-        role: 'assistant',
-        content: 'Sorry, I encountered an error. Please try again.',
-        timestamp: new Date().toISOString(),
-      };
-      setMessages(prev => [...prev, errorMessage]);
+      // Remove loading indicator and add error message
+      setMessages(prev => {
+        const withoutLoading = prev.filter(msg => msg.role !== 'loading');
+        const errorMessage = {
+          id: Date.now() + 1,
+          role: 'error',
+          content: 'Sorry, I encountered an error. Please try again.',
+          timestamp: new Date().toISOString(),
+        };
+        return [...withoutLoading, errorMessage];
+      });
     } finally {
       setIsLoading(false);
     }
@@ -172,6 +200,22 @@ const ChatWidget = () => {
 
   // Function to render a message
   const renderMessage = (message) => {
+    if (message.role === 'loading') {
+      return (
+        <div key={message.id} className={styles.loadingIndicator}>
+          {message.content}
+        </div>
+      );
+    }
+    
+    if (message.role === 'error') {
+      return (
+        <div key={message.id} className={styles.errorMessage}>
+          {message.content}
+        </div>
+      );
+    }
+    
     return (
       <div key={message.id} className={clsx(styles.message, styles[message.role])}>
         <div className={styles.messageContent}>
@@ -216,18 +260,11 @@ const ChatWidget = () => {
 
           <div className={styles.chatMessages}>
             {messages.length === 0 ? (
-              <div className={styles.welcomeMessage}>
-                <p>Hello! I'm your textbook assistant. Ask me anything about the content on this page or any other topic from the textbook.</p>
+              <div className={styles.emptyState}>
+                Hello! I'm your textbook assistant. Ask me anything about the content on this page or any other topic from the textbook.
               </div>
             ) : (
               messages.map(renderMessage)
-            )}
-            {isLoading && (
-              <div className={clsx(styles.message, styles.assistant)}>
-                <div className={styles.typingIndicator}>
-                  Assistant is thinking...
-                </div>
-              </div>
             )}
             <div ref={messagesEndRef} />
           </div>

@@ -140,7 +140,7 @@ export const AuthProvider = ({ children }) => {
 
       const data = await response.json();
 
-      if (response.ok) {
+      if (response.ok && data.access_token) {
         // Save token to localStorage
         localStorage.setItem('token', data.access_token);
 
@@ -149,15 +149,16 @@ export const AuthProvider = ({ children }) => {
           payload: { user: data.user },
         });
 
-        // Redirect to home page after successful signup
-        window.location.href = baseUrl;
-        return { success: true };
+        // Don't redirect immediately - let the component handle it
+        // This prevents auto-redirect to signin
+        return { success: true, user: data.user };
       } else {
+        const errorMessage = data.detail || data.message || 'Signup failed';
         dispatch({
           type: 'AUTH_ERROR',
-          payload: data.detail || 'Signup failed',
+          payload: errorMessage,
         });
-        return { success: false, error: data.detail || 'Signup failed' };
+        return { success: false, error: errorMessage };
       }
     } catch (error) {
       dispatch({
@@ -186,7 +187,7 @@ export const AuthProvider = ({ children }) => {
 
       const data = await response.json();
 
-      if (response.ok) {
+      if (response.ok && data.access_token) {
         // Save token to localStorage
         localStorage.setItem('token', data.access_token);
 
@@ -195,13 +196,14 @@ export const AuthProvider = ({ children }) => {
           payload: { user: data.user },
         });
 
-        return { success: true };
+        return { success: true, user: data.user };
       } else {
+        const errorMessage = data.detail || data.message || 'Signin failed';
         dispatch({
           type: 'AUTH_ERROR',
-          payload: data.detail || 'Signin failed',
+          payload: errorMessage,
         });
-        return { success: false, error: data.detail || 'Signin failed' };
+        return { success: false, error: errorMessage };
       }
     } catch (error) {
       dispatch({

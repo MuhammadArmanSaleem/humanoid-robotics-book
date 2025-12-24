@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useColorMode } from '@docusaurus/theme-common';
 import { useAuth } from '../../theme/AuthContext';
 import styles from './NavbarAuth.module.css';
 
 const NavbarAuth = () => {
   const { user, isAuthenticated, signout } = useAuth();
+  const { colorMode, setColorMode } = useColorMode();
   const [showDropdown, setShowDropdown] = useState(false);
 
   const handleSignout = async () => {
@@ -65,11 +67,10 @@ const NavbarAuth = () => {
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
-                  // Toggle dark/light mode - this would use Docusaurus theme context
-                  console.log('Toggle theme');
+                  setColorMode(colorMode === 'dark' ? 'light' : 'dark');
                 }}
               >
-                🌙 Dark Mode
+                {colorMode === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode'}
               </a>
             </li>
             <li>
@@ -100,11 +101,19 @@ const NavbarAuth = () => {
       </div>
     );
   } else {
-    // Not authenticated - show sign in/up buttons
+    // Not authenticated - show sign in/up buttons and theme toggle
     return (
-      <div className={`navbar__auth-buttons ${styles.authButtons}`}>
+      <div className={styles.authButtons}>
+        <button
+          className={styles.themeToggle}
+          onClick={() => setColorMode(colorMode === 'dark' ? 'light' : 'dark')}
+          aria-label={`Switch to ${colorMode === 'dark' ? 'light' : 'dark'} mode`}
+          title={`Switch to ${colorMode === 'dark' ? 'light' : 'dark'} mode`}
+        >
+          {colorMode === 'dark' ? '☀️' : '🌙'}
+        </button>
         <a
-          className="button button--secondary button--sm margin-right--sm"
+          className="button button--secondary button--sm"
           href="/signin"
         >
           Sign In

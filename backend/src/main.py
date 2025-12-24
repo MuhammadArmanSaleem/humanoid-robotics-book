@@ -21,11 +21,12 @@ from .utils.db import init_db
 from .routes.auth import router as auth_router
 from .routes.user import router as user_router
 from .routes.personalization import router as personalization_router
+from .routes.content_generation import router as content_generation_router
 
 
 app = FastAPI(
     title="RAG Chatbot API",
-    description="API for RAG-based chatbot that answers questions from textbook content",
+    description="API for RAG-based chatbot that answers questions from textbook content, with content generation workflow integration",
     version="1.0.0"
 )
 
@@ -51,6 +52,7 @@ personalization_service = PersonalizationService(llm_service)
 app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(personalization_router)
+app.include_router(content_generation_router)
 
 
 # Security utility functions

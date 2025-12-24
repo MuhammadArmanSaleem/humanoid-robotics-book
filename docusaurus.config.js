@@ -75,6 +75,11 @@ const config = {
             label: 'Textbook',
           },
           {
+            type: 'html',
+            position: 'right',
+            value: '<div id="navbar-auth-container"></div>',
+          },
+          {
             href: 'https://github.com/arman-saleem/physical-ai-humanoid-robotics-book',
             label: 'GitHub',
             position: 'right',
@@ -89,7 +94,7 @@ const config = {
             items: [
               {
                 label: 'Introduction',
-                to: '/docs/chapter-1-introduction-to-physical-ai/introduction-to-physical-ai',
+                to: '/docs/chapter-1-introduction-to-physical-ai/lesson-1-what-is-physical-ai',
               },
             ],
           },

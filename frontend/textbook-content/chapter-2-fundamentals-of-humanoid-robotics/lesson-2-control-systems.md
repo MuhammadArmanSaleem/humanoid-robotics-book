@@ -78,4 +78,4 @@ By the end of this lesson, you will be able to:
 - [Resource 3: Link or reference to additional material]
 
 ### Next Lesson
-Continue to [Next Lesson Title](./next-lesson-path) to build upon the concepts learned in this lesson.
+Continue to [Chapter 3: AI Integration](/docs/chapter-3-advanced-topics/lesson-1-ai-integration) to build upon the concepts learned in this lesson.
