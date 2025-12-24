@@ -9,15 +9,19 @@ export default function Home() {
     <Layout
       title={`Welcome to ${siteConfig.title}`}
       description="Physical AI & Humanoid Robotics Textbook">
-      <main>
+      <main style={{ padding: 'var(--spacing-xl) 0' }}>
         <div className="container padding-vert--lg">
           <div className="row">
             <div className="col col--8 col--offset-2">
               <h1 className="hero__title">{siteConfig.title}</h1>
               <p className="hero__subtitle">{siteConfig.tagline}</p>
-              <div className="margin-top--lg">
-                <p>Welcome to the Physical AI & Humanoid Robotics textbook.</p>
-                <p>Use the navigation menu to access the textbook content or start reading below.</p>
+              <div className="margin-top--lg" style={{ marginBottom: 'var(--spacing-lg)' }}>
+                <p style={{ fontSize: 'var(--font-size-base)', marginBottom: 'var(--spacing-md)', color: 'var(--ifm-color-content)' }}>
+                  Welcome to the Physical AI & Humanoid Robotics textbook.
+                </p>
+                <p style={{ fontSize: 'var(--font-size-base)', marginBottom: 'var(--spacing-md)', color: 'var(--ifm-color-content)' }}>
+                  Use the navigation menu to access the textbook content or start reading below.
+                </p>
               </div>
               <div className="margin-top--lg">
                 <Link

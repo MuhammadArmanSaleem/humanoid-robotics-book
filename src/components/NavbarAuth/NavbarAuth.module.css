@@ -1,6 +1,12 @@
+/* ============================================
+ * Navbar Auth Component Styles
+ * Using design system variables for consistency
+ * ============================================ */
+
 .navbarAuth {
   display: flex;
   align-items: center;
+  gap: var(--spacing-md);
 }
 
 .navbarItem {
@@ -11,12 +17,28 @@
   display: flex;
   align-items: center;
   text-decoration: none;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: 8px;
+  color: var(--color-primary);
+  transition: all 0.2s ease;
+  font-size: var(--font-size-base);
+}
+
+.navbarLink:hover {
+  background-color: var(--ifm-color-emphasis-200);
+  color: var(--ifm-color-primary-dark);
+}
+
+.navbarLink.active {
+  background-color: var(--ifm-color-emphasis-300);
+  color: var(--ifm-color-primary-dark);
+  font-weight: 600;
 }
 
 .navbarUserName {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
 }
 
 .navbarAvatar {
@@ -27,19 +49,23 @@
   position: absolute;
   top: 100%;
   right: 0;
-  background: var(--ifm-background-surface-color);
-  border: 1px solid var(--ifm-color-emphasis-300);
-  border-radius: var(--ifm-global-radius);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
   box-shadow: var(--ifm-global-shadow-lw);
   min-width: 200px;
   z-index: 1000;
+  margin-top: var(--spacing-xs);
+  padding: var(--spacing-xs) 0;
 }
 
 .dropdownLink {
   display: block;
-  padding: 0.5rem 1rem;
+  padding: var(--spacing-sm) var(--spacing-md);
   color: var(--ifm-color-emphasis-800);
   text-decoration: none;
+  font-size: var(--font-size-sm);
+  transition: background-color 0.2s ease;
 }
 
 .dropdownLink:hover {
@@ -58,8 +84,23 @@
 
 .authButtons {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--spacing-sm);
   align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.authButtons .button {
+  padding: var(--spacing-xs) var(--spacing-md);
+  font-size: var(--font-size-sm);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  margin: 0;
+}
+
+.authButtons .button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .passwordWrapper {
@@ -99,10 +140,36 @@
   gap: 0.5rem;
 }
 
+/* Theme toggle button styling */
+.themeToggle {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  cursor: pointer;
+  font-size: var(--font-size-lg);
+  color: var(--color-primary);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.themeToggle:hover {
+  background-color: var(--ifm-color-emphasis-200);
+  border-color: var(--color-primary);
+}
+
 @media (max-width: 996px) {
+  .navbarAuth {
+    flex-direction: column;
+    gap: var(--spacing-sm);
+  }
+  
   .authButtons {
     flex-direction: column;
-    gap: 0.25rem;
+    gap: var(--spacing-xs);
+    width: 100%;
   }
 
   .button {

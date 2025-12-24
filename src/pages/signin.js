@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import Layout from '@theme/Layout';
+import Link from '@docusaurus/Link';
 import { useAuth } from '../theme/AuthContext';
 import styles from '../components/NavbarAuth/NavbarAuth.module.css';
+import formStyles from './signin.module.css';
 
 const SigninPage = () => {
   const [email, setEmail] = useState('');
@@ -9,14 +11,63 @@ const SigninPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
   const { signin } = useAuth();
 
+  // Validate email format
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  // Real-time email validation
+  const handleEmailChange = (e) => {
+    const value = e.target.value;
+    setEmail(value);
+    if (value && !validateEmail(value)) {
+      setEmailError('Please enter a valid email address');
+    } else {
+      setEmailError('');
+    }
+  };
+
+  // Real-time password validation
+  const handlePasswordChange = (e) => {
+    const value = e.target.value;
+    setPassword(value);
+    if (value && value.length < 6) {
+      setPasswordError('Password must be at least 6 characters');
+    } else {
+      setPasswordError('');
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setEmailError('');
+    setPasswordError('');
 
-    if (!email || !password) {
-      setError('Email and password are required');
+    // Validate inputs
+    if (!email) {
+      setEmailError('Email is required');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setEmailError('Please enter a valid email address');
+      return;
+    }
+
+    if (!password) {
+      setPasswordError('Password is required');
+      return;
+    }
+
+    if (password.length < 6) {
+      setPasswordError('Password must be at least 6 characters');
       return;
     }
 
@@ -25,12 +76,17 @@ const SigninPage = () => {
     const result = await signin(email, password);
 
     if (result.success) {
+      // Clear any errors
+      setError('');
       // Redirect to previous page or home page after successful signin
       const urlParams = new URLSearchParams(window.location.search);
       const from = urlParams.get('from') || '/';
-      window.location.href = from;
+      // Use setTimeout to ensure state is updated before redirect
+      setTimeout(() => {
+        window.location.href = from;
+      }, 100);
     } else {
-      setError(result.error || 'Signin failed');
+      setError(result.error || 'Signin failed. Please check your credentials and try again.');
       setIsSubmitting(false);
     }
   };
@@ -52,34 +108,46 @@ const SigninPage = () => {
                   </div>
                 )}
                 <form onSubmit={handleSubmit}>
-                  <div className="form-group">
+                  <div className={formStyles.formGroup}>
                     <label htmlFor="email">Email Address</label>
                     <input
                       type="email"
                       id="email"
-                      className="form-control"
+                      className={`${formStyles.formControl} ${emailError ? formStyles.isInvalid : ''}`}
                       placeholder="Enter your email"
                       value={email}
-                      onChange={(e) => setEmail(e.target.value)}
+                      onChange={handleEmailChange}
+                      onBlur={handleEmailChange}
                       required
                     />
+                    {emailError && (
+                      <div className={formStyles.invalidFeedback}>
+                        {emailError}
+                      </div>
+                    )}
                   </div>
 
-                  <div className="form-group">
+                  <div className={formStyles.formGroup}>
                     <label htmlFor="password">Password</label>
-                    <div className={styles.passwordWrapper}>
+                    <div className={formStyles.passwordWrapper}>
                       <input
                         type={showPassword ? 'text' : 'password'}
                         id="password"
-                        className="form-control"
+                        className={`${formStyles.formControl} ${passwordError ? formStyles.isInvalid : ''}`}
                         placeholder="Enter your password"
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={handlePasswordChange}
+                        onBlur={handlePasswordChange}
                         required
                       />
+                      {passwordError && (
+                        <div className={formStyles.invalidFeedback}>
+                          {passwordError}
+                        </div>
+                      )}
                       <button
                         type="button"
-                        className={styles.passwordToggle}
+                        className={formStyles.passwordToggle}
                         onClick={() => setShowPassword(!showPassword)}
                         aria-label={showPassword ? 'Hide password' : 'Show password'}
                       >
@@ -88,10 +156,10 @@ const SigninPage = () => {
                     </div>
                   </div>
 
-                  <div className="form-group">
+                  <div className={formStyles.formGroup}>
                     <button
                       type="submit"
-                      className="button button--primary button--block"
+                      className={`${formStyles.button} ${formStyles.buttonPrimary}`}
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? 'Signing In...' : 'Sign In'}
@@ -102,7 +170,7 @@ const SigninPage = () => {
               <div className="card__footer">
                 <p>
                   Don't have an account?{' '}
-                  <a href={`${baseUrl}signup`}>Sign up</a>
+                  <Link to="/signup">Sign up</Link>
                 </p>
               </div>
             </div>

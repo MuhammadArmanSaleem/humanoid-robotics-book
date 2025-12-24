@@ -16,6 +16,42 @@
   --ifm-color-primary-lighter: #359962;
   --ifm-color-primary-lightest: #3cad6e;
   --ifm-code-font-size: 95%;
+
+  /* ============================================
+   * Design System: Spacing Scale
+   * Consistent spacing values across all components
+   * ============================================ */
+  --spacing-xs: 4px;    /* Tight spacing, inline elements */
+  --spacing-sm: 8px;    /* Small gaps, form field padding */
+  --spacing-md: 12px;   /* Medium gaps, component spacing */
+  --spacing-lg: 16px;   /* Large gaps, section spacing */
+  --spacing-xl: 24px;   /* Extra large, page sections */
+  --spacing-2xl: 32px;  /* Maximum spacing, major sections */
+
+  /* ============================================
+   * Design System: Typography Scale
+   * Clear visual hierarchy for headings and body text
+   * ============================================ */
+  --font-size-xs: 0.75rem;    /* 12px - Captions, helper text */
+  --font-size-sm: 0.875rem;    /* 14px - Small body text */
+  --font-size-base: 1rem;      /* 16px - Body text (default) */
+  --font-size-lg: 1.125rem;    /* 18px - Large body, emphasis */
+  --font-size-xl: 1.25rem;     /* 20px - H4 headings */
+  --font-size-2xl: 1.5rem;      /* 24px - H3 headings */
+  --font-size-3xl: 2rem;       /* 32px - H2 headings */
+  --font-size-4xl: 2.5rem;     /* 40px - H1 headings */
+
+  /* ============================================
+   * Design System: Color Roles (Light Theme)
+   * Semantic color roles that work with Docusaurus theming
+   * ============================================ */
+  --color-background: var(--ifm-background-color);
+  --color-surface: var(--ifm-background-surface-color);
+  --color-primary: var(--ifm-color-primary);
+  --color-muted: var(--ifm-color-content-secondary);
+  --color-danger: #dc3545;     /* Error states, validation errors */
+  --color-success: #28a745;    /* Success states, confirmations */
+  --color-border: var(--ifm-color-emphasis-300);
 }
 
 /* For readability concerns, you should choose a lighter palette in dark mode. */
@@ -27,6 +63,46 @@
   --ifm-color-primary-light: #29d5b0;
   --ifm-color-primary-lighter: #32d8b4;
   --ifm-color-primary-lightest: #4fddbf;
+
+  /* ============================================
+   * Design System: Color Roles (Dark Theme)
+   * Dark theme overrides for better contrast and readability
+   * ============================================ */
+  --color-background: var(--ifm-background-color);
+  --color-surface: var(--ifm-background-surface-color);
+  --color-primary: var(--ifm-color-primary);
+  --color-muted: var(--ifm-color-content-secondary);
+  --color-danger: #ff6b6b;     /* Lighter red for dark mode visibility */
+  --color-success: #51cf66;   /* Lighter green for dark mode visibility */
+  --color-border: var(--ifm-color-emphasis-300);
+}
+
+/* ============================================
+ * Design System: Responsive Breakpoints
+ * Media query breakpoints for responsive design
+ * ============================================ */
+@media (max-width: 768px) {
+  /* Mobile adjustments - spacing and typography scale down proportionally */
+  :root {
+    --spacing-xs: 3px;
+    --spacing-sm: 6px;
+    --spacing-md: 10px;
+    --spacing-lg: 14px;
+    --spacing-xl: 20px;
+    --spacing-2xl: 28px;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  /* Tablet adjustments - maintain readability */
+  :root {
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 12px;
+    --spacing-lg: 16px;
+    --spacing-xl: 24px;
+    --spacing-2xl: 32px;
+  }
 }
 
 .docusaurus-highlight-code-line {
@@ -38,4 +114,176 @@
 
 [data-theme='dark'] .docusaurus-highlight-code-line {
   background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* ============================================
+ * Design System: Global Style Application
+ * Apply design system variables to Docusaurus global styles
+ * This ensures consistent spacing, typography, and colors across all pages
+ * ============================================ */
+
+/* Apply spacing scale to common Docusaurus elements */
+.main-wrapper {
+  /* Use design system spacing for main content areas */
+  padding: var(--spacing-lg);
+}
+
+/* Apply typography hierarchy to headings */
+h1 {
+  font-size: var(--font-size-4xl);
+  margin-bottom: var(--spacing-lg);
+}
+
+h2 {
+  font-size: var(--font-size-3xl);
+  margin-bottom: var(--spacing-md);
+}
+
+h3 {
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-md);
+}
+
+h4 {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-sm);
+}
+
+/* Apply spacing to paragraphs and lists */
+p {
+  margin-bottom: var(--spacing-md);
+  font-size: var(--font-size-base);
+}
+
+ul, ol {
+  margin-bottom: var(--spacing-md);
+  padding-left: var(--spacing-xl);
+}
+
+li {
+  margin-bottom: var(--spacing-xs);
+}
+
+/* Apply color roles to links */
+a {
+  color: var(--color-primary);
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--ifm-color-primary-light);
+}
+
+/* Apply spacing to buttons */
+button {
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin: var(--spacing-xs);
+}
+
+/* Apply spacing to form elements */
+input, textarea, select {
+  padding: var(--spacing-sm) var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+/* Apply spacing to containers and sections */
+.container {
+  padding: var(--spacing-lg);
+}
+
+.section {
+  margin-bottom: var(--spacing-xl);
+}
+
+/* Apply design system to code blocks */
+pre {
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+  border-radius: 8px;
+}
+
+code {
+  font-size: var(--font-size-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+}
+
+/* ============================================
+ * Design System: Page Layout Classes
+ * Utility classes for consistent page spacing and typography
+ * ============================================ */
+
+/* Home page spacing adjustments */
+.hero__title {
+  font-size: var(--font-size-4xl) !important;
+  margin-bottom: var(--spacing-lg) !important;
+  color: var(--color-primary);
+}
+
+.hero__subtitle {
+  font-size: var(--font-size-xl) !important;
+  margin-bottom: var(--spacing-xl) !important;
+  color: var(--color-muted);
+}
+
+/* Page container spacing */
+.padding-vert--lg {
+  padding-top: var(--spacing-xl) !important;
+  padding-bottom: var(--spacing-xl) !important;
+}
+
+.margin-top--lg {
+  margin-top: var(--spacing-xl) !important;
+}
+
+.margin-vert--lg {
+  margin-top: var(--spacing-xl) !important;
+  margin-bottom: var(--spacing-xl) !important;
+}
+
+/* Card spacing */
+.card {
+  padding: var(--spacing-xl);
+  margin-bottom: var(--spacing-lg);
+  border-radius: 8px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+}
+
+.card__header {
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.card__header h2 {
+  font-size: var(--font-size-3xl);
+  margin-bottom: 0;
+  color: var(--color-primary);
+}
+
+/* Form container spacing */
+.form-container {
+  padding: var(--spacing-xl);
+}
+
+.form-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+/* Button spacing */
+.button {
+  padding: var(--spacing-sm) var(--spacing-lg);
+  margin: var(--spacing-xs);
+  border-radius: 8px;
+  font-size: var(--font-size-base);
+  transition: all 0.2s ease;
+}
+
+.button--lg {
+  padding: var(--spacing-md) var(--spacing-xl);
+  font-size: var(--font-size-lg);
+}
+
+.margin-left--md {
+  margin-left: var(--spacing-md) !important;
 }
